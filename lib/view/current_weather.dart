@@ -6,7 +6,7 @@ Widget CurrentWearher(String location, String data, IconData icon, String temp) 
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-          height: 130,
+          height: 50,
         ),
         Text(
           "$location",
