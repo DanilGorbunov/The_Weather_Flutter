@@ -6,7 +6,7 @@ Widget CurrentWearher(String location, String data, IconData icon, String temp) 
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-          height: 50,
+          height: 20,
         ),
         Text(
           "$location",
@@ -16,17 +16,40 @@ Widget CurrentWearher(String location, String data, IconData icon, String temp) 
               color: Colors.white),
         ),
         SizedBox(
-          height: 10,
+          height: 6,
         ),
         Text(
-            "$data"
+            "$data",
+          style: TextStyle(
+
+              fontSize: 14,
+              color: Colors.white),
         ),
-        Icon(Icons.wb_sunny_rounded),
+        SizedBox(
+          height: 20,
+        ),
+        Container(
+          height: 120.0,
+          width: 120.0,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                  'assets/images/moon_cloud.png'),
+              fit: BoxFit.fill,
+            ),
+            shape: BoxShape.circle,
+          ),
+        ),
+
+        SizedBox(
+          height: 15,
+        ),
+        //Icon(Icons.wb_sunny_rounded),
         Text(
           "$temp",
           style: TextStyle(
             color: Colors.white,
-            fontSize: 45,
+            fontSize: 55,
             fontWeight: FontWeight.w700,
           ),
         )

@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
-TextStyle textMiniStyle = TextStyle(color: Colors.white, fontSize: 12);
-TextStyle textDataStyle = TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700);
+TextStyle textMiniStyle = TextStyle(color: Colors.white, fontSize: 14);
+TextStyle textDataStyle = TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700);
 
 Widget MoreInformation (String temp, String humidy, String wind ){
   return Container(
+
+
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SizedBox(
-            height: 150,
+            height: 170,
+          ),
+          SizedBox(
+            width: 2,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -58,6 +62,9 @@ Widget MoreInformation (String temp, String humidy, String wind ){
                 style: textDataStyle,
               ),
             ],
+          ),
+          SizedBox(
+            width: 7,
           ),
         ],
       ),
