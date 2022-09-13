@@ -37,12 +37,9 @@ class _HomePageState extends State<HomePage> {
   WeatherApiClient client = WeatherApiClient();
   Weather? data;
 
-
   Future<void> getData() async{
     data = await client.getCurrentWeather("Lagos ");
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,32 +67,38 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.place),
-            label: 'My Location',
-            backgroundColor: Color(0xFFA7B4E0),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Business',
-            backgroundColor: Color(0xFFA7B4E0),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.folder_copy_outlined),
-            label: 'Forecast',
-            backgroundColor: Color(0xFFA7B4E0),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-            backgroundColor: Color(0xFFA7B4E0),
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black,
-        onTap: _onItemTapped,
+      bottomNavigationBar: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30.0),
+          topRight: Radius.circular(30.0),
+        ),
+        child: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.place),
+              label: 'My Location',
+              backgroundColor: Color(0xFFA7B4E0),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              label: 'Search',
+              backgroundColor: Color(0xFFA7B4E0),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.folder_copy_outlined),
+              label: 'Forecast',
+              backgroundColor: Color(0xFFA7B4E0),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+              backgroundColor: Color(0xFFA7B4E0),
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.black,
+          onTap: _onItemTapped,
+        ),
       ),
       //body: mainFirstBody(),
 
@@ -114,13 +117,13 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: 50,
                     ),
-                    TodayWeather(),
+                    IconsWeather(),
                     CurrentWearher('${data!.city}', time, Icons.wb_sunny_rounded, '${data!.temp}°' + ' ' + 'C'),
                     MoreInformation('${data!.temp}°', '${data!.humidy}%', '${data!.wind}'),
                     Row(
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.only(left: 21),
+                          padding: const EdgeInsets.only(left: 20),
                           child: Text(
                               "Today",
                             style: TextStyle(
@@ -177,10 +180,13 @@ class _HomePageState extends State<HomePage> {
               width: 140,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
-                // color: Color(0xFFA7B4E0),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(color: Colors.white, spreadRadius: 3),
+                color: Color(0xFFA7B4E0),
+                boxShadow: const [
+                  BoxShadow(color: Color(0xFFA7B4E0), spreadRadius: 3,
+                      blurRadius: 0.5,
+                      offset: Offset(0.0, 0.75)
+
+                  ),
                 ],
               ),
               child: Row(
@@ -386,10 +392,19 @@ class _HomePageState extends State<HomePage> {
   }
 
 
-  Container TodayWeather() {
+  Container IconsWeather() {
     return Container(
-      color: Color(0xFF7882A7),
       height: 85,
+      decoration: BoxDecoration(
+        color: Color(0xFF7882A7),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+                color: Colors.black54,
+                blurRadius: 15.0,
+                offset: Offset(0.0, 0.75)
+            )
+          ],
+      ),
       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
