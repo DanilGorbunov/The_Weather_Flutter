@@ -23,6 +23,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  int _selectedIndex = 0;
+  static const TextStyle optionStyle =
+  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   WeatherApiClient client = WeatherApiClient();
   Weather? data;
@@ -30,68 +40,124 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getData() async{
     data = await client.getCurrentWeather("Lagos ");
-
-
   }
+
+
 
   @override
   Widget build(BuildContext context) {
+
+    List<Widget> _widgetOptions = <Widget>[
+      Container(
+        child: mainFirstBody(),
+      ),
+      Text(
+        'Index 1: Business',
+        style: optionStyle,
+      ),
+      Text(
+        'Index 2: School',
+        style: optionStyle,
+      ),
+      Text(
+        'Index 3: Settings',
+        style: optionStyle,
+      ),
+    ];
+
     return Scaffold(
-      body: FutureBuilder(
-        future: getData(),
-        builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.done) {
-                return Container(
-                  color: Color(0xFF828CAE),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 50,
-                      ),
-                      TodayWeather(),
-                      CurrentWearher('${data!.city}', time, Icons.wb_sunny_rounded, '${data!.temp}°' + ' ' + 'C'),
-                      MoreInformation('${data!.temp}°', '${data!.humidy}%', '${data!.wind}'),
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(left: 21),
-                            child: Text(
-                                "Today",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                color: Colors.white,
-
-                              ),
-                            ),
-                          ),
-                          Spacer(), // use Spacer
-                          Padding(
-                            padding: const EdgeInsets.only(right: 21),
-                            child: Text(
-                                "View report",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Color(0xFF002688),
-
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      HoursWeather(),
-                    ],
-                  ),
-                );
-          }
-          return Container();
-        }
-      )
+      backgroundColor: Color(0xFF828CAE),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.place),
+            label: 'My Location',
+            backgroundColor: Color(0xFFA7B4E0),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Business',
+            backgroundColor: Color(0xFFA7B4E0),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.folder_copy_outlined),
+            label: 'Forecast',
+            backgroundColor: Color(0xFFA7B4E0),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+            backgroundColor: Color(0xFFA7B4E0),
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black,
+        onTap: _onItemTapped,
+      ),
+      //body: mainFirstBody(),
 
     );
   }
+
+  FutureBuilder<void> mainFirstBody() {
+    return FutureBuilder(
+      future: getData(),
+      builder: (context, snapshot) {
+        if(snapshot.connectionState == ConnectionState.done) {
+              return Container(
+                color: Color(0xFF828CAE),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 50,
+                    ),
+                    TodayWeather(),
+                    CurrentWearher('${data!.city}', time, Icons.wb_sunny_rounded, '${data!.temp}°' + ' ' + 'C'),
+                    MoreInformation('${data!.temp}°', '${data!.humidy}%', '${data!.wind}'),
+                    Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 21),
+                          child: Text(
+                              "Today",
+                            style: TextStyle(
+                                fontSize: 18,
+                              color: Colors.white,
+
+                            ),
+                          ),
+                        ),
+                        Spacer(), // use Spacer
+                        Padding(
+                          padding: const EdgeInsets.only(right: 21),
+                          child: Text(
+                              "View report",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFF002688),
+
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    HoursWeather(),
+
+                  ],
+                ),
+              );
+        }
+        return Container();
+      }
+    );
+  }
+
 
 
   Container HoursWeather() {
