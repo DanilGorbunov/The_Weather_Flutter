@@ -8,25 +8,19 @@ import 'more_info.dart';
 DateTime datetime = DateTime.now();
 String time = DateFormat.MMMMEEEEd().format(datetime);
 
-
 class HomePage extends StatefulWidget {
-
-
   const HomePage({super.key, required this.title});
 
   final String title;
-
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-
   int _selectedIndex = 0;
   static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   void _onItemTapped(int index) {
     setState(() {
@@ -36,28 +30,34 @@ class _HomePageState extends State<HomePage> {
 
   WeatherApiClient client = WeatherApiClient();
   Weather? data;
+  Weather? dataSearch;
+  final _cityTextController = TextEditingController();
 
-  Future<void> getData() async{
-    data = await client.getCurrentWeather("Lagos ");
+  void _search() async {
+    final response = await client.getCurrentWeather(_cityTextController.text);
+    setState(() => dataSearch = response);
+  }
+
+  Future<void> getData() async {
+    data = await client.getCurrentWeather('Palo Alto');
+    //data = dataSearch!;
   }
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> _widgetOptions = <Widget>[
       Container(
         child: mainFirstBody(),
       ),
+      // Container(
+      //   child:  SearchSecondWidget('${data!.city}'),
+      // ),
       Text(
-        'Index 1: Business',
+        'Forecast',
         style: optionStyle,
       ),
       Text(
-        'Index 2: School',
-        style: optionStyle,
-      ),
-      Text(
-        'Index 3: Settings',
+        'Settings',
         style: optionStyle,
       ),
     ];
@@ -101,71 +101,145 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       //body: mainFirstBody(),
-
     );
   }
 
   FutureBuilder<void> mainFirstBody() {
     return FutureBuilder(
-      future: getData(),
-      builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.done) {
-              return Container(
-                color: Color(0xFF828CAE),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 50,
-                    ),
-                    IconsWeather(),
-                    CurrentWearher('${data!.city}', time, Icons.wb_sunny_rounded, '${data!.temp}°' + ' ' + 'C'),
-                    MoreInformation('${data!.temp}°', '${data!.humidy}%', '${data!.wind}'),
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Text(
-                              "Today",
-                            style: TextStyle(
-                                fontSize: 18,
-                              color: Colors.white,
-
-                            ),
+        future: getData(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Container(
+              color: Color(0xFF828CAE),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 50,
+                  ),
+                  IconsWeather(),
+                  CurrentWearher('${data!.city}', time, Icons.wb_sunny_rounded,
+                      '${data!.temp}°' + ' ' + 'C'),
+                  MoreInformation(
+                      '${data!.temp}°', '${data!.humidy}%', '${data!.wind}'),
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(
+                          "Today",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
                           ),
                         ),
-                        Spacer(), // use Spacer
-                        Padding(
-                          padding: const EdgeInsets.only(right: 21),
-                          child: Text(
-                              "View report",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Color(0xFF002688),
-
-                            ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 21),
+                        child: Text(
+                          "View report",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color(0xFF002688),
                           ),
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    HoursWeather(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 0,
+                  ),
+                  HoursWeather(),
+                ],
+              ),
+            );
+          }
+          return Container();
+        });
+  }
 
-                  ],
-                ),
-              );
-        }
-        return Container();
-      }
+  Container SearchSecondWidget(String location) {
+    return Container(
+      width: 290,
+      height: 70,
+      color: Color(0xFFA7B4E0),
+      alignment: Alignment.center,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 200,
+                alignment: Alignment.center,
+                child:
+                    // TextField(
+                    //   controller: _cityTextController,
+                    //   decoration: InputDecoration(
+                    //     // labelText: "Search",
+                    //     hintText: "Search",
+                    //     prefixIcon: Icon(Icons.search),
+                    //     suffixIcon: _cityTextController.text.isEmpty
+                    //         ? null
+                    //         : InkWell(
+                    //       onTap: () => _cityTextController.clear(),
+                    //       child: Icon(Icons.clear),
+                    //     ),
+                    //     border: OutlineInputBorder(
+                    //       borderRadius: BorderRadius.all(
+                    //         Radius.circular(10.0),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    TextField(
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        controller: _cityTextController,
+                        decoration: InputDecoration(),
+                        textAlign: TextAlign.center),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Container(
+                child: ElevatedButton(
+                    onPressed: _search,
+                    child: Text('Search',
+                        style: TextStyle(
+                          color: Colors.white,
+                        )),
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.grey),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        )))),
+              ),
+            ],
+          ),
+          SizedBox(
+            width: 30,
+          ),
+          Text(
+            location,
+            style: TextStyle(
+                fontWeight: FontWeight.w700, fontSize: 29, color: Colors.white),
+          ),
+        ],
+      ),
     );
   }
 
-
-
   Container HoursWeather() {
     return Container(
-
       height: 85,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -182,11 +256,11 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(30),
                 color: Color(0xFFA7B4E0),
                 boxShadow: const [
-                  BoxShadow(color: Color(0xFFA7B4E0), spreadRadius: 3,
+                  BoxShadow(
+                      color: Color(0xFFA7B4E0),
+                      spreadRadius: 3,
                       blurRadius: 0.5,
-                      offset: Offset(0.0, 0.75)
-
-                  ),
+                      offset: Offset(0.0, 0.75)),
                 ],
               ),
               child: Row(
@@ -201,8 +275,7 @@ class _HomePageState extends State<HomePage> {
                       width: 55.0,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                              'assets/images/cloud.png'),
+                          image: AssetImage('assets/images/cloud.png'),
                           fit: BoxFit.fill,
                         ),
                         shape: BoxShape.circle,
@@ -225,7 +298,6 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
                           ),
-
                         ),
                       ),
                       SizedBox(
@@ -237,7 +309,6 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.black,
                           fontWeight: FontWeight.w500,
                         ),
-
                       ),
                     ],
                   ),
@@ -270,8 +341,7 @@ class _HomePageState extends State<HomePage> {
                       width: 55.0,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                              'assets/images/moon_cloud.png'),
+                          image: AssetImage('assets/images/moon_cloud.png'),
                           fit: BoxFit.fill,
                         ),
                         shape: BoxShape.circle,
@@ -294,7 +364,6 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
                           ),
-
                         ),
                       ),
                       SizedBox(
@@ -306,7 +375,6 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.black,
                           fontWeight: FontWeight.w500,
                         ),
-
                       ),
                     ],
                   ),
@@ -339,8 +407,7 @@ class _HomePageState extends State<HomePage> {
                       width: 55.0,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(
-                              'assets/images/light_rain.png'),
+                          image: AssetImage('assets/images/light_rain.png'),
                           fit: BoxFit.fill,
                         ),
                         shape: BoxShape.circle,
@@ -363,7 +430,6 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.black,
                             fontWeight: FontWeight.w500,
                           ),
-
                         ),
                       ),
                       SizedBox(
@@ -375,7 +441,6 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.black,
                           fontWeight: FontWeight.w500,
                         ),
-
                       ),
                     ],
                   ),
@@ -391,203 +456,185 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   Container IconsWeather() {
     return Container(
       height: 85,
       decoration: BoxDecoration(
         color: Color(0xFF7882A7),
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Colors.black54,
-                blurRadius: 15.0,
-                offset: Offset(0.0, 0.75)
-            )
-          ],
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+              color: Colors.black54,
+              blurRadius: 15.0,
+              offset: Offset(0.0, 0.75))
+        ],
       ),
       child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Container(
-                              //width: 80,
-                              height: 90,
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            SizedBox(
+              width: 30,
+            ),
+            Container(
+              //width: 80,
+              height: 90,
 
-                             child: Column(
-                               children: [
-                                 Container(
-                                   height: 60.0,
-                                   width: 60.0,
-                                   decoration: BoxDecoration(
-                                     image: DecorationImage(
-                                       image: AssetImage(
-                                           'assets/images/big_rain_drops.png'),
-                                       fit: BoxFit.fill,
-                                     ),
-                                     shape: BoxShape.circle,
-                                   ),
-                                 ),
-                                 Text(
-                                     "Rain",
-                                   style: TextStyle(
-                                     color: Colors.white,
-                                     fontWeight: FontWeight.w500,
-                                   ),
-
-                                 ),
-                               ],
-                             ),
-                            ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Container(
-                              //width: 80,
-                              height: 90,
-
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 60.0,
-                                    width: 60.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/drizz.png'),
-                                        fit: BoxFit.fill,
-                                      ),
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Drizz",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Container(
-                              //width: 100,
-                              height: 90,
-
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 60.0,
-                                    width: 60.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/thunder.png'),
-                                        fit: BoxFit.fill,
-                                      ),
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Thunder",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Container(
-                              //width: 80,
-                              height: 90,
-
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 60.0,
-                                    width: 60.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/light_rain.png'),
-                                        fit: BoxFit.fill,
-                                      ),
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Light rain",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Container(
-                              //width: 80,
-                              height: 90,
-
-                              child: Column(
-                                children: [
-                                  Container(
-                                    height: 60.0,
-                                    width: 60.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                            'assets/images/moon_cloud.png'),
-                                        fit: BoxFit.fill,
-                                      ),
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Moon Cloud",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+              child: Column(
+                children: [
+                  Container(
+                    height: 60.0,
+                    width: 60.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/big_rain_drops.png'),
+                        fit: BoxFit.fill,
                       ),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Text(
+                    "Rain",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 30,
+            ),
+            Container(
+              //width: 80,
+              height: 90,
+
+              child: Column(
+                children: [
+                  Container(
+                    height: 60.0,
+                    width: 60.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/drizz.png'),
+                        fit: BoxFit.fill,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Text(
+                    "Drizz",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 30,
+            ),
+            Container(
+              //width: 100,
+              height: 90,
+
+              child: Column(
+                children: [
+                  Container(
+                    height: 60.0,
+                    width: 60.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/thunder.png'),
+                        fit: BoxFit.fill,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Text(
+                    "Thunder",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 30,
+            ),
+            Container(
+              //width: 80,
+              height: 90,
+
+              child: Column(
+                children: [
+                  Container(
+                    height: 60.0,
+                    width: 60.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/light_rain.png'),
+                        fit: BoxFit.fill,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Text(
+                    "Light rain",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 30,
+            ),
+            Container(
+              //width: 80,
+              height: 90,
+
+              child: Column(
+                children: [
+                  Container(
+                    height: 60.0,
+                    width: 60.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/images/moon_cloud.png'),
+                        fit: BoxFit.fill,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Text(
+                    "Moon Cloud",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-
-
-
-  Container MyArticles(String imageVal, String heading, String subHeading){
-
+  Container MyArticles(String imageVal, String heading, String subHeading) {
     return Container(
       width: 160.0,
       child: Card(
         child: Wrap(
           children: [
-            Image.asset(
-                'assets/images/456.png'
-            ),
+            Image.asset('assets/images/456.png'),
             ListTile(
               title: Text(heading),
               subtitle: Text(subHeading),
@@ -597,8 +644,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-
-
 }
-

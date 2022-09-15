@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 Widget CurrentWearher(String location, String data, IconData icon, String temp) {
+
+  // final _cityTextController = TextEditingController();
+
   return Center(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -8,6 +11,11 @@ Widget CurrentWearher(String location, String data, IconData icon, String temp) 
         SizedBox(
           height: 20,
         ),
+        // TextField(
+        // controller: _cityTextController,
+        // decoration: InputDecoration(labelText: 'City'),
+        // textAlign: TextAlign.center),
+        // ElevatedButton(onPressed: _search, child: Text('Search')),
         Text(
           "$location",
           style: TextStyle(
