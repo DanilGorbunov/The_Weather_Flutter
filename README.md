@@ -1,4 +1,4 @@
-![Optional Text](/assets/images/readme.png)
+![Optional Text](/assets/images/markdown_image.png)
 
 # the weather project for drill with http/json
 
