@@ -1,3 +1,5 @@
+![Optional Text](/assets/images/readme.png)
+
 # the weather project for drill with http/json
 
 Figma Design
